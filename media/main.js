@@ -4,6 +4,10 @@
 (function () {
   const vscode = acquireVsCodeApi();
   // this vscode allowed us to do some vscode thing and allow us to communicate with the vs code extention
+  // this give us access to webview and this give us access to vscode object which can give us the api that we can use
+  // so we will going to use this feature to get the todolist data in a sidebar
+  // so inside the SidebarProvider in script tag we will going to add this function
+  // now we can access this vscode object inside our svelte
 
   //   const button = document.getElementById("button");
   //   button.innerText = "Hello from javascript";

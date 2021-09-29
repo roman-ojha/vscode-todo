@@ -25,6 +25,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           if (!data.value) {
             return;
           }
+          // here webview is telling extention to do something
           vscode.window.showInformationMessage(data.value);
           //   here this will show the information message if one comes from wabview
           break;
@@ -84,6 +85,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${styleMainUri}" rel="stylesheet">
+        <script nonce="${nonce}""> 
+        const tsvscode = acquireVsCodeApi();
+        <!--now we can access this tsvscode object inside our svelte-->
+        </script>
 			</head>
       <body>
 				<script nonce="${nonce}" src="${scriptUri}"></script>

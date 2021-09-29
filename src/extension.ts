@@ -143,8 +143,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.refresh", async () => {
-      HelloWorldPanel.kill();
-      HelloWorldPanel.createOrShow(context.extensionUri);
+      // HelloWorldPanel.kill();
+      // HelloWorldPanel.createOrShow(context.extensionUri);
       // here while command 'refresh' we will kill our panel and recreate it
       // so now we again have to debugg because we had change the command
       // now we can just use 'refresh' command to refresh the page or to get the window
@@ -153,12 +153,18 @@ export function activate(context: vscode.ExtensionContext) {
       // now we can say vscode to executed the command as well like:
       // so when ever you want to interact with vscode use 'vscode' that we import at the upper side
       // so here it will not instently execute this code so we have to put some setTimeout function
-      setTimeout(() => {
-        vscode.commands.executeCommand(
-          "workbench.action.webview.openDeveloperTools"
-        );
-      }, 500);
-      // and here we just past that command
+      // setTimeout(() => {
+      //   vscode.commands.executeCommand(
+      //     "workbench.action.webview.openDeveloperTools"
+      //     // and here we just past that command
+      //   );
+      // }, 500);
+      // now if we want to use command to close side bar then copy the command id then:
+      await vscode.commands.executeCommand("workbench.action.closeSidebar");
+      // if you want to open the 'VSTodo' extention then just copy the command id and the past in here
+      await vscode.commands.executeCommand(
+        "workbench.view.extension.vstodo-sidebar-view"
+      );
     })
   );
 
@@ -211,6 +217,40 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider("vstodo-sidebar", sidebarProvider)
     // here "vstodo-sidebar" string should match from the package.json id
+  );
+
+  const item = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right
+  );
+  // here we are creating button which is buttom at the vscode editor at the rignt side so, that by just clicking this command will get executed
+  item.text = "$(beaker) Add todo";
+  // and now here we can add the text on it and also icon where inside $(file-code) is the icon which is from the codicons where we can go to the codicons page and pick a name for the icon
+  item.command = "vstodo.addTodo";
+  // here we are adding which command to execute
+  item.show();
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.addTodo", () => {
+      const { activeTextEditor } = vscode.window;
+      // activeTextEditor might be undefine as well so we have to make a condition
+      // here activeTextEditor will return the text which are active at the moment inside our vscode
+      if (!activeTextEditor) {
+        vscode.window.showInformationMessage("No active text editor");
+        return;
+      }
+      // const text = activeTextEditor.document.getText();
+      // here if we will just going to use '.getText()' then it will going to get all the text inside the textEditor or form the active file but we just want the text which is selected so
+      const text = activeTextEditor.document.getText(
+        activeTextEditor.selection
+      );
+      // now here we can get the text that now we can send it to webview like this
+      sidebarProvider._view?.webview.postMessage({
+        type: "new-todo",
+        value: text,
+      });
+      // now the thing left is on svelte side in our web view we need to listen for the message that this is going to send
+      // now we will add some code inside the 'Sidebar.svelte'
+      // after completing code if we will just select the text and run the command then it will going to add in a todo list
+    })
   );
 }
 
