@@ -29,7 +29,8 @@ export class HelloWorldPanel {
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
       HelloWorldPanel.viewType,
-      "VSinder",
+      "VStodo",
+      // here this is the panel name
       column || vscode.ViewColumn.One,
       {
         // Enable javascript in the webview
@@ -126,13 +127,17 @@ export class HelloWorldPanel {
   private _getHtmlForWebview(webview: vscode.Webview) {
     //   this function where this basically gets the files for the web view that actually render
     // // And the uri we use to load this script in the webview
-    const scriptUri = webview.asWebviewUri(
+    const textScript = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "main.js")
       //   here we can wee it is getting "main.js" file form the "media" directory
       //   we will going to complie this using svelt
       //  'main.js' we are grabing code from :
       // -> https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/media/ma%20in.js
       // NOTE: you can use a devoloper tool to debuge things just press f1 and write 'open webview developer tool'
+    );
+
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "out/compiled", "HelloWorld.js")
     );
 
     // there is the two css file that vscode gives us where they recommend
@@ -200,11 +205,8 @@ export class HelloWorldPanel {
         </script>
 			</head>
       <body>
-      <h1>Hello world</h1>
-      <input type="text"/>
-      <button>hello</button>
-      <script src="${scriptUri}" nonce="${nonce}">
 	    </body>
+      <script src="${scriptUri}" nonce="${nonce}">
 	</html>`;
   }
 }

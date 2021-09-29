@@ -16,4 +16,9 @@
     );
   */
   //  for that purpose we will going to use 'svelte' framework for this project
+  // for that we will going to grab a code "rollup.config.js" from:
+  // -> https://github.com/benawad/vsinder/blob/master/packages/extension/rollup.config.js
+  // rollup is kind like a webpack that will going to trun on svelte code into javascript code
+  // so, we will going to create new file in root directory called "rollup.config.js"
+  // now comment transfer to "rollup.config.js"
 })();

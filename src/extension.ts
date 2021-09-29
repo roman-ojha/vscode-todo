@@ -81,11 +81,12 @@
                             -> https://github.com/benawad/vsinder/blob/master/packages/extension/src/SwiperPanel.ts
                         -> and past in "HellowWorldPanel.ts"
 */
+
 import * as vscode from "vscode";
-import { HelloWorldPanel } from "./HellowWorldPanel";
+import { HelloWorldPanel } from "./HelloWorldPanel";
+import { SidebarProvider } from "./SidebarProvider";
 export function activate(context: vscode.ExtensionContext) {
   // this is the activate function and this basically it's called when your extension first get's setup
-  console.log('Congratulations, your extension "vstodo" is now active!');
   let disposable = vscode.commands.registerCommand("vstodo.helloWorld", () => {
     //   here we are resisteringCommand and "vstodo.helloWorld" where we have to start with name of our extention which is "vstodo"
     // vscode.window.showInformationMessage("Hello from VSTodo!");
@@ -139,6 +140,77 @@ export function activate(context: vscode.ExtensionContext) {
 					"onCommand:vstodo.askQuestion"
 				],
 	*/
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.refresh", async () => {
+      HelloWorldPanel.kill();
+      HelloWorldPanel.createOrShow(context.extensionUri);
+      // here while command 'refresh' we will kill our panel and recreate it
+      // so now we again have to debugg because we had change the command
+      // now we can just use 'refresh' command to refresh the page or to get the window
+      // and we also want to use shortcut to 'open webview developer tool' so to make that
+      // we can press f1 and type 'open webview developer tool' and go to setting and right click the command and copy the command ID
+      // now we can say vscode to executed the command as well like:
+      // so when ever you want to interact with vscode use 'vscode' that we import at the upper side
+      // so here it will not instently execute this code so we have to put some setTimeout function
+      setTimeout(() => {
+        vscode.commands.executeCommand(
+          "workbench.action.webview.openDeveloperTools"
+        );
+      }, 500);
+      // and here we just past that command
+    })
+  );
+
+  /*
+    => For sideBar view:
+      // these thing are okay when you want all the screen to show you stuff but if you just want to use you sidebar to display stuff then you can do that as well
+      // so we are trying to create a sidebar view so we have to tell vscode that we are adding it
+      // so in package.json we have to add 'viesContainer' and a 'views':
+          -> "contributes": {
+                "viewsContainers": {
+                  "activitybar": [
+                    {
+                      "id": "vstodo-sidebar-view",
+                      "title": "VSTodo",
+                     "icon": "media/checklist.svg"
+                    }
+                  ]
+                },
+                "views": {
+                  "vstodo-sidebar-view": [
+                    {
+                      "type": "webview",
+                      "id": "vstodo-sidebar",
+                      "name": "VSTodo",
+                      "icon": "media/checklist.svg",
+                      "contextualTitle": "VSTodo"
+                    }
+                  ]
+                },
+              },
+            => here we have to add our custom 'name', 'title', 'icon','id' etc...
+      => and now we need to add an activationEvent in package.json:
+              =>   "activationEvents": [
+                      "onView:vstodo-sidebar"
+                    ],
+              NOTE: note that the namehave to match like 'vatodo-sidebar'
+      => so for the icon if you want to use icon look like vscode icon then you might have to go to:
+        => https://microsoft.github.io/vscode-codicons/dist/codicon.html
+        -> once you have find the icon that you want you have to go to github:
+                -> https://github.com/microsoft/vscode-codicons
+        -> and go to src/icons/<icon_Name> and click on it and just grab the svg like:
+                -> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 4.48h-.71L2 3.43l.71-.7.69.68L4.81 2l.71.71-1.77 1.77zM6.99 3h8v1h-8V3zm0 3h8v1h-8V6zm8 3h-8v1h8V9zm-8 3h8v1h-8v-1zM3.04 7.48h.71l1.77-1.77-.71-.7L3.4 6.42l-.69-.69-.71.71 1.04 1.04zm.71 3.01h-.71L2 9.45l.71-.71.69.69 1.41-1.42.71.71-1.77 1.77zm-.71 3.01h.71l1.77-1.77-.71-.71-1.41 1.42-.69-.69-.71.7 1.04 1.05z"/></svg>
+        -> and create .svg file in media folder and then past the code
+        => now we will going to initialize that view
+*/
+  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  // here for the 'SidebarProvider' we will going to copy the code form:
+  // ->https://github.com/benawad/vsinder/blob/master/packages/extension/src/SidebarProvider.ts
+  //
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider("vstodo-sidebar", sidebarProvider)
+    // here "vstodo-sidebar" string should match from the package.json id
   );
 }
 
