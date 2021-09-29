@@ -228,6 +228,7 @@ export function activate(context: vscode.ExtensionContext) {
   item.command = "vstodo.addTodo";
   // here we are adding which command to execute
   item.show();
+
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.addTodo", () => {
       const { activeTextEditor } = vscode.window;

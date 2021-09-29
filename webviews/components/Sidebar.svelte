@@ -18,6 +18,11 @@ import HelloWorld from "./HelloWorld.svelte";
         }
     });
     })
+    /*
+        -> now everything we've done so far has been local to vscode and it means all that data will be on that person computer but sometimes we want to interact with the api store data into database
+        -> now we will going to setup the api and backend and database stuff through which we can interact with and also do and authentication with github
+        -> so we will going to make a new folder called 'api'
+    */
 </script>
 
 <!-- and we will write the style like the -->
