@@ -67,7 +67,7 @@ import HelloWorld from "./HelloWorld.svelte";
          // here webview is telling extention to do something using "onDidReceiveMessage" and doing some command
         //  where we might want to do it's inverse where you want to send the information from extention to webview
         // for that we will going to set up some command to do this so we will going to add command 'vstodo.addTodo' in package.json and make command in extention.ts
-}}>Click me</button>
+}}>Click me hard</button>
 <button on:click={()=>{
     tsvscode.postMessage({type: 'onError',value: 'error message'});
 }}>click me for error</button>

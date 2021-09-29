@@ -1,4 +1,5 @@
 /*
+   -> NOTE: I put the api inside the vscode extention root folder so it will throw an error so we have to exclude 'api' folder in 'tsconfig.json'
     -> firstly we will going to install
         -> npm i express
     -> we know we are using typescript so we have to install:
@@ -36,14 +37,16 @@ import { createConnection } from "typeorm";
 import { __prod__ } from "./constants";
 import { join } from "path";
 import { User } from "./entities/user";
+import dotenv from "dotenv";
 
 (async () => {
+  dotenv.config({ path: "config.env" });
   // here we are connecting to a database
   await createConnection({
     type: "postgres",
-    database: "postgres",
+    database: process.env.DATABASE,
     username: "postgres",
-    password: "grepostdata@987",
+    password: process.env.PASSWORD,
     entities: [join(__dirname, "./entities/*.*")],
     // here for entities we will going to make a new folder called 'entities' inside we will create 'user.ts' file
     // __dirname will let us in the absolute path or where we run 'index.ts'
