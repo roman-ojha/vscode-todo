@@ -10,7 +10,10 @@
   "author": "Roman ojha",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.37"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

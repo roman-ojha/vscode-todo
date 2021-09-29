@@ -20,11 +20,42 @@
             -> which will compile the .ts file and make a .js file in 'dist' folder
     -> and in new terminal run:
             -> yarn dev
+    
+    -> for database we will going use 'PostgreSQL' so get setup and install it:
+    -> and we will going to install :
+            -> npm i typeorm pg reflect-metadata
+    -> and makesure that in tsconfig.json we have this things:
+            "emitDecoratorMetadata": true,
+            "experimentalDecorators": true,
+    
 */
 
+import "reflect-metadata";
 import express from "express";
+import { createConnection } from "typeorm";
+import { __prod__ } from "./constants";
+import { join } from "path";
+import { User } from "./entities/user";
 
 (async () => {
+  // here we are connecting to a database
+  await createConnection({
+    type: "postgres",
+    database: "postgres",
+    username: "postgres",
+    password: "grepostdata@987",
+    entities: [join(__dirname, "./entities/*.*")],
+    // here for entities we will going to make a new folder called 'entities' inside we will create 'user.ts' file
+    // __dirname will let us in the absolute path or where we run 'index.ts'
+    // here '*.*' will gives us all javascript and typescript files
+    // you can do '*.js" just to get all js file as well
+
+    logging: !__prod__,
+    synchronize: !__prod__,
+  });
+  const user = await User.create({ name: "bob" }).save();
+  // here we created the user
+  console.log({ user });
   const app = express();
   app.get("/", (_req, res) => {
     res.send("Hello");
