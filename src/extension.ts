@@ -66,12 +66,35 @@
 	-> every time we change something in code we have to relunch the extention
 
 */
+
+/*
+        => For this project we will going to include 'vscode webview' so go and search 'vscode webview' in browser
+            -> https://code.visualstudio.com/api/extension-guides/webview
+            -> repository:
+                -> https://github.com/microsoft/vscode-extension-samples/tree/main/webview-sample
+                -> https://github.com/microsoft/vscode-extension-samples
+                -> in here there is a lot of example of vacode extention that you can look at if get stock
+            -> we are uisng :
+                        -> https://github.com/benawad/vsinder
+                        -> repository to grab sum code 
+                        -> here we grab code form :
+                            -> https://github.com/benawad/vsinder/blob/master/packages/extension/src/SwiperPanel.ts
+                        -> and past in "HellowWorldPanel.ts"
+*/
 import * as vscode from "vscode";
+import { HelloWorldPanel } from "./HellowWorldPanel";
 export function activate(context: vscode.ExtensionContext) {
+  // this is the activate function and this basically it's called when your extension first get's setup
   console.log('Congratulations, your extension "vstodo" is now active!');
   let disposable = vscode.commands.registerCommand("vstodo.helloWorld", () => {
     //   here we are resisteringCommand and "vstodo.helloWorld" where we have to start with name of our extention which is "vstodo"
-    vscode.window.showInformationMessage("Hello from VSTodo!");
+    // vscode.window.showInformationMessage("Hello from VSTodo!");
+
+    // here we will going to activate this pannel just when we call hello world
+    HelloWorldPanel.createOrShow(context.extensionUri);
+    // this function takes 'extensionUri'
+    // and 'extensionUri' comes with context -> function activate(context: vscode.ExtensionContext) {}
+    // now we can run the 'hell world' command and we will see that we create the new window
   });
   context.subscriptions.push(disposable);
   //	where context.subscriptions.push(disposable) thing where it return the value to 'disposable'
