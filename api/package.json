@@ -10,6 +10,7 @@
   "author": "Roman ojha",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -20,6 +21,7 @@
     "typeorm": "^0.2.37"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^16.10.2",
     "@types/passport-github": "^1.1.6",

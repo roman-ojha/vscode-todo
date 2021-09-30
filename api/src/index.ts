@@ -45,6 +45,7 @@ import { Strategy as GitHubStrategy } from "passport-github";
 // npm i --save-dev @types/passport-github => to remove error for typescript
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 (async () => {
   dotenv.config({ path: "config.env" });
@@ -72,6 +73,12 @@ import jwt from "jsonwebtoken";
   // so firstly register a application in github by:
   // https://github.com/settings/developers
   // go and register to OAuth Apps
+  passport.serializeUser(function (user: any, done) {
+    // serialize means we pass an object for an user and we need to turn to a string here we are turning stiring of "user.accessToken"
+    done(null, user.accessToken);
+  });
+  app.use(cors({ origin: "*" }));
+  app.use(passport.initialize());
   passport.use(
     new GitHubStrategy(
       {
@@ -124,11 +131,6 @@ import jwt from "jsonwebtoken";
       }
     )
   );
-  passport.serializeUser(function (user: any, done) {
-    // serialize means we pass an object for an user and we need to turn to a string here we are turning stiring of "user.accessToken"
-    done(null, user.accessToken);
-  });
-  app.use(passport.initialize());
 
   app.get("/auth/github", passport.authenticate("github", { session: false }));
   // here if user go to this url we are authenticating the user by login
@@ -176,6 +178,7 @@ import jwt from "jsonwebtoken";
     const user = await User.findOne(userId);
     res.send({ user });
     // after varifying the user we will going to send back to extention 'user'
+    // now we will go to 'sidebar.svelte' in extention and fetch the current user and display it
   });
 
   app.get("/", (_req, res) => {

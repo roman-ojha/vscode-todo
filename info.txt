@@ -1,0 +1,11 @@
+*) To compile the extention webpack and to compile typescript:
+    -> yarn watch
+
+*) To run the extention:
+    -> Run(Start debugging) or press: F5
+
+*) To compile server(api) typescript:/api:
+    -> yarn watch
+
+*) To run the server(api):/api:
+    -> yarn dev
