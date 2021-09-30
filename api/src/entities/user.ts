@@ -6,6 +6,10 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column("text")
+  // username might be null so we have to make is nullable
+  @Column("text", { nullable: true })
   name: string;
+
+  @Column("text", { unique: true, nullable: true })
+  githubId: string;
 }
