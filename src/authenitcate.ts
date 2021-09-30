@@ -1,6 +1,7 @@
 import { apiBaseUrl } from "./constants";
 import * as vscode from "vscode";
 import * as polka from "polka";
+import { TokenManager } from "./TokenManager";
 
 export const authenticate = () => {
   // here we are creating polka server and the expalnation is down bellow
@@ -14,8 +15,18 @@ export const authenticate = () => {
       res.end("<h1>something went wrong</h1>");
       return;
     }
-    console.log(token);
+    // so in vscode the way that we store token is the global state and you have to access the global state by context variable
+    // so no we have to create a 'globalState' in extention.ts :
+    // TokenManager.globalState = context.globalState;
+    // so for that we can create a class(file) called 'TokenManager.ts'
+    // this class will going to have a global refrence to 'globalState'
+    await TokenManager.setToken(token);
+    // now we can store the token using setToken function
     res.end("<h1>auth was successful, you can close this now</h1>");
+    // after authentication complete we can close the url means we can close the server because we don't need that now
+    (app as any).server.close();
+    // (app as any) for the typescript
+    // now we will back to the api side
   });
   app.listen(54321, (err: Error) => {
     //   we know that the url port redrdirect form the github authentication is 54321

@@ -141,8 +141,43 @@ import jwt from "jsonwebtoken";
       res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
       // normally when we will work with a website we will redirect to that website but we are authenticating with an extention so extention have to start a server that we can send it to and here we are going to start a server on 54321 where this url will going to be same on the production as well
       // so now we need to setup is on extention side to actually read this token so now on the extention side pakage.json we will going to add a command 'authenticate' and add the command on extention.ts as well
+      // after compliting the authentication and storing the token inside the extention now we will going to use toke to get authenticated and get sue data form the database
+      // now we will going to create a route to get the user and data form the use from the given token
     }
   );
+
+  app.get("/me", async (req, res) => {
+    const authHeader = req.headers.authorization;
+    // so the stadard fromate for the authorization headers is:
+    // -> Bearer <token_value>
+    if (!authHeader) {
+      res.send({ user: null });
+      return;
+    }
+    const token = authHeader.split(" ")[1];
+    // here we are spliting the 'Bearer <token_value>' and getting token
+    if (!token) {
+      res.send({ user: null });
+    }
+    let userId = "";
+    try {
+      // here we are varify the token
+      const payload: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      // here we will going to get the userId because that that we store when creating token
+      userId = payload.userId;
+    } catch (err) {
+      res.send({ user: null });
+      return;
+    }
+    if (!userId) {
+      res.send({ user: null });
+      return;
+    }
+    const user = await User.findOne(userId);
+    res.send({ user });
+    // after varifying the user we will going to send back to extention 'user'
+  });
+
   app.get("/", (_req, res) => {
     res.send("Hello");
   });

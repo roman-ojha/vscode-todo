@@ -86,11 +86,17 @@ import * as vscode from "vscode";
 import { authenticate } from "./authenitcate";
 import { HelloWorldPanel } from "./HelloWorldPanel";
 import { SidebarProvider } from "./SidebarProvider";
+import { TokenManager } from "./TokenManager";
 export function activate(context: vscode.ExtensionContext) {
+  TokenManager.globalState = context.globalState;
+
   // this is the activate function and this basically it's called when your extension first get's setup
   let disposable = vscode.commands.registerCommand("vstodo.helloWorld", () => {
     //   here we are resisteringCommand and "vstodo.helloWorld" where we have to start with name of our extention which is "vstodo"
     // vscode.window.showInformationMessage("Hello from VSTodo!");
+    vscode.window.showInformationMessage(
+      "token value is:" + TokenManager.getToken()
+    );
 
     // here we will going to activate this pannel just when we call hello world
     HelloWorldPanel.createOrShow(context.extensionUri);
