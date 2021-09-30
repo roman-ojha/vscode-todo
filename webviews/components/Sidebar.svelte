@@ -3,12 +3,13 @@
 import { stringify } from "querystring";
 import { onMount } from "svelte";
 import HelloWorld from "./HelloWorld.svelte";
+import Todo from "./Todo.svelte";
+import type {User} from '../types';
     let accessToken='';
-    let todos:Array<{text:string,completed:boolean}> =[];
-    // here we are decelaring a type in typescript
-    let text='';
     let loading =true;
-    let user:{name:string,id:number}|null=null;
+    // let user:{name:string,id:number}|null=null;
+    // here now we created 'User' type we can use it like this
+    let user:User|null=null;
     onMount(async()=>{
         // this funciton get call when the component first get mounted
         window.addEventListener('message', async event => {
@@ -16,9 +17,6 @@ import HelloWorld from "./HelloWorld.svelte";
             const message = event.data; // The json data that the extension sent
             console.log({message});
             switch (message.type) {
-                case 'new-todo':
-                    todos=[{text:message.value,completed:false},...todos];
-                    break;
                 case 'token':
                      accessToken=message.value
                         // so for url we will going to use 'constant.ts' 'apiBaseUrl' so it means we will going to add the script in 'SideBarProvider.ts' page
@@ -52,6 +50,9 @@ import HelloWorld from "./HelloWorld.svelte";
             tsvscode.postMessage({type:'get-token',value:undefined});
             // now here we will post the message saying 'get-token'
             // so when a svelte component mount for the first time it will going to send a post message to our extention and it will going to pass the 'type:'get-token'' and it will go to 'SidebarProvider.ts and it will recive the massage using 'onDidReceiveMessage()' and then when the case match then it will send the message back to the webview passing it a current token form the 'Tokenmanager.ts' and after that the uppder part of the case 'token'  will going to call and it will fetch the current user form the server and it means whenever the extention load the token will going to fetch 
+
+            // the next thing that we will going to do is to logout button user
+            // and so we will going to create an different file and create a logic of todo in that file 'Todo.svelte' and past the entire form and we will copy all the stuff need there and delete some from here
             
     })
     /*
@@ -61,12 +62,6 @@ import HelloWorld from "./HelloWorld.svelte";
     */
 </script>
 
-<!-- and we will write the style like the -->
-<style>
-    .complete{
-        text-decoration: line-through;
-    }
-</style>
 
 <!-- and now here the body take  -->
 
@@ -74,45 +69,49 @@ import HelloWorld from "./HelloWorld.svelte";
 {#if loading}
 <div>loading...</div>
 {:else if user}
-<pre>{JSON.stringify(user,null,2)}</pre>
-{:else}
-<div>no user is logged in</div>
-{/if}
-<form on:submit|preventDefault={()=>{
-    todos=[{text,completed:false},...todos];
-    text="";
-}}>
-    <input bind:value={text}/>
-    <!-- getting todo text -->
-</form>
-
-<!-- displaying todo list -->
-<ul>
-    {#each todos as todo (todo.text)}
-        <li
-        class:complete={todo.completed}
-        on:click={()=>{
-            // here we reversing the completed todo list 
-            // in class name we can do one of them
-            // class={todo.completed?"complete" :""}
-            todo.completed=!todo.completed;
-        }}>{todo.text}</li>
-    {/each}
-</ul>
-
+<Todo user={user}/>
+<!-- so if user exit the we will pass the user as a props in 'Todo.svelte' -->
+<!-- and now we will going to create a new file called 'types.ts'  and put some type of user:
+export type User = {
+  id: string;
+  name: string;
+  githubId: string;
+};
+-> so that we can use that user every place
+-> now we will going to export :
+-> export let user:User; from 'Todo.svelte'
+--> 
 <button on:click={()=>{
-     tsvscode.postMessage({
-        //  here no we can use the vscode object because we include it inside our script tag in SidebarProvider ,const tsvscode = acquireVsCodeApi();
-        // but by just putting that typescript doesnot know that this object exist so it will throw and error 
-        // to solve that problem we have to create a new file called 'globals.d.ts' and declare global
-                type: 'onInfo',
-                value: 'info message'
-            });
-        // this postMessage function will post the data and will going to receive by the 'onDidReceiveMessage' function inside our 'SidebarProvider.ts'
-         // here webview is telling extention to do something using "onDidReceiveMessage" and doing some command
-        //  where we might want to do it's inverse where you want to send the information from extention to webview
-        // for that we will going to set up some command to do this so we will going to add command 'vstodo.addTodo' in package.json and make command in extention.ts
+    accessToken=""
+    // for the logout we will set the accessToken to empty it means we clear the user token now user have to login again
+    user=null
+    tsvscode.postMessage({type:'logout',value:undefined});
+    // and we will going to post the message for logout
+    // and in for the logout case in 'SidebarProvider.ts' we will going to setToken("") empty
+}}>logout</button>
+<!-- user will logout after clicking this button -->
+{:else}
+<button on:click={()=>{
+     tsvscode.postMessage({type:'authenticate',value:undefined});
+    //  here we will authenticate the use it they are not logged in
+    // now we will going to listen for that in our 'SidebarProvider.ts' by 'onDidReceiveMessage()'
+    // and write case where we will call the 'authenticate()' function 
+}}>login with Github</button>
+<!-- if user is not logged in -->
+{/if}
+<button on:click={()=>{
+    tsvscode.postMessage({
+       //  here no we can use the vscode object because we include it inside our script tag in SidebarProvider ,const tsvscode = acquireVsCodeApi();
+       // but by just putting that typescript doesnot know that this object exist so it will throw and error 
+       // to solve that problem we have to create a new file called 'globals.d.ts' and declare global
+               type: 'onInfo',
+               value: 'info message'
+           });
+       // this postMessage function will post the data and will going to receive by the 'onDidReceiveMessage' function inside our 'SidebarProvider.ts'
+        // here webview is telling extention to do something using "onDidReceiveMessage" and doing some command
+       //  where we might want to do it's inverse where you want to send the information from extention to webview
+       // for that we will going to set up some command to do this so we will going to add command 'vstodo.addTodo' in package.json and make command in extention.ts
 }}>Click me hard</button>
 <button on:click={()=>{
-    tsvscode.postMessage({type: 'onError',value: 'error message'});
+   tsvscode.postMessage({type: 'onError',value: 'error message'});
 }}>click me for error</button>

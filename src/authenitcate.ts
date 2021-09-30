@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import * as polka from "polka";
 import { TokenManager } from "./TokenManager";
 
-export const authenticate = () => {
+export const authenticate = (fn: () => void) => {
   // here we are creating polka server and the expalnation is down bellow
   const app = polka();
   app.get("/auth/:token", async (req, res) => {
@@ -24,6 +24,14 @@ export const authenticate = () => {
     // now we can store the token using setToken function
     res.end("<h1>auth was successful, you can close this now</h1>");
     // after authentication complete we can close the url means we can close the server because we don't need that now
+    fn();
+    // here fn() is the callback function it means we get the token and we need to call this function which will do:
+    /*
+    webviewView.webview.postMessage({
+                type: "token",
+                value: TokenManager.getToken(),
+              });
+    */
     (app as any).server.close();
     // (app as any) for the typescript
     // now we will back to the api side
