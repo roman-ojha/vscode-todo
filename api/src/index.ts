@@ -153,9 +153,13 @@ import { isAuth } from "./isAuth";
   );
 
   app.get("/todo", isAuth, async (req: any, res) => {
-    const todos = await Todo.find({ where: { creatorId: req.userId } });
+    const todos = await Todo.find({
+      where: { creatorId: req.userId },
+      order: { id: "DESC" },
+    });
     // here we are sending the todo data to the extention if user authenticate
     res.send({ todos });
+    // now we can call this route and fetch all the todo form the extention side
   });
 
   app.post("/todo", isAuth, async (req: any, res) => {
