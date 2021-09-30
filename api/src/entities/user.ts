@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Todo } from "./Todo";
 // here we kind of create the schema of what kind of thing that you want to put inside your database
 @Entity()
 export class User extends BaseEntity {
@@ -12,4 +19,8 @@ export class User extends BaseEntity {
 
   @Column("text", { unique: true, nullable: true })
   githubId: string;
+
+  @OneToMany(() => Todo, (t) => t.creator)
+  todos: Promise<Todo[]>;
+  // now here we makde a relationship
 }

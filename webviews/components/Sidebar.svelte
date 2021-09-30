@@ -69,7 +69,7 @@ import type {User} from '../types';
 {#if loading}
 <div>loading...</div>
 {:else if user}
-<Todo user={user}/>
+<Todo user={user} {accessToken}/>
 <!-- so if user exit the we will pass the user as a props in 'Todo.svelte' -->
 <!-- and now we will going to create a new file called 'types.ts'  and put some type of user:
 export type User = {
@@ -90,6 +90,10 @@ export type User = {
     // and in for the logout case in 'SidebarProvider.ts' we will going to setToken("") empty
 }}>logout</button>
 <!-- user will logout after clicking this button -->
+<!-- now we had completed the logout on we will going to add todo table inside our database 
+using jwt token and authenticate and find the user and save it
+now we will go to api inside 'entities' folder we will create a file called 'todo.ts' we will create a schema for the todo
+-->
 {:else}
 <button on:click={()=>{
      tsvscode.postMessage({type:'authenticate',value:undefined});

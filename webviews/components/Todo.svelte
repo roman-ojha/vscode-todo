@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import type{ User } from '../types';
     export let user:User;
+    export let accessToken:string;
     let text='';
     let todos:Array<{text:string,completed:boolean}> =[];
     // here we are decelaring a type in typescript
@@ -32,9 +33,23 @@
 
 <div>Hello: {user.name}</div>
 <!-- now we can display user  -->
-<form on:submit|preventDefault={()=>{
-    todos=[{text,completed:false},...todos];
+<form on:submit|preventDefault={async ()=>{
+    //here when user submit we want to do a post request
+    const respose=await fetch(`${apiBaseUrl}/todo`,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+            authorization:`Bearer ${accessToken}`
+        },
+        body:JSON.stringify({
+            text,
+        })
+    });
+    const {todo} =await respose.json();
+    todos=[todo,...todos];
     text="";
+    // here we post the data to the server now we have to fetch the data from the server as well
+    // now we have to create another route in api/src/index.ts
 }}>
     <input bind:value={text}/>
     <!-- getting todo text -->

@@ -46,6 +46,8 @@ import { Strategy as GitHubStrategy } from "passport-github";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import { Todo } from "./entities/Todo";
+import { isAuth } from "./isAuth";
 
 (async () => {
   dotenv.config({ path: "config.env" });
@@ -79,6 +81,8 @@ import cors from "cors";
   });
   app.use(cors({ origin: "*" }));
   app.use(passport.initialize());
+  app.use(express.json());
+  // this will parse to a json object
   passport.use(
     new GitHubStrategy(
       {
@@ -147,6 +151,27 @@ import cors from "cors";
       // now we will going to create a route to get the user and data form the use from the given token
     }
   );
+
+  app.get("/todo", isAuth, async (req: any, res) => {
+    const todos = await Todo.find({ where: { creatorId: req.userId } });
+    // here we are sending the todo data to the extention if user authenticate
+    res.send({ todos });
+  });
+
+  app.post("/todo", isAuth, async (req: any, res) => {
+    // now in this route we will create a todo
+    const todo = await Todo.create({
+      text: req.body.text,
+      creatorId: req.userId,
+    }).save();
+    //here we are creating todo came form extention and saving it to database
+    // here to get the req.body express has to parse it by: app.use(express.json());
+    // in 'creatorId' we will use the token where we will be doing this in a couple of different palce so we will place somewhere it means we will create a middleware
+    // so we will going to create file called 'isAuth.ts' in 'src' folder
+    res.send({ todo });
+    // now after saving todo form the server we have to go the extention side and post the text to this route
+    // go to 'src/compontents/Todo.svelte'
+  });
 
   app.get("/me", async (req, res) => {
     const authHeader = req.headers.authorization;
