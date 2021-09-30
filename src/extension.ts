@@ -83,6 +83,7 @@
 */
 
 import * as vscode from "vscode";
+import { authenticate } from "./authenitcate";
 import { HelloWorldPanel } from "./HelloWorldPanel";
 import { SidebarProvider } from "./SidebarProvider";
 export function activate(context: vscode.ExtensionContext) {
@@ -251,6 +252,12 @@ export function activate(context: vscode.ExtensionContext) {
       // now the thing left is on svelte side in our web view we need to listen for the message that this is going to send
       // now we will add some code inside the 'Sidebar.svelte'
       // after completing code if we will just select the text and run the command then it will going to add in a todo list
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.authenticate", () => {
+      // we will going to put a authenitcation login inside the 'src/authenticate.ts' and call that in here
+      authenticate();
     })
   );
 }

@@ -14,7 +14,8 @@
     "onCommand:vstodo.askQuestion",
     "onCommand:vstodo.refresh",
     "onView:vstodo-sidebar",
-    "onView:vstodo-addTodo"
+    "onView:vstodo-addTodo",
+    "onView:vstodo-authenticate"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -57,6 +58,11 @@
         "command": "vstodo.addTodo",
         "category": "VSTodo",
         "title": "Add Todo From Selection"
+      },
+      {
+        "command": "vstodo.authenticate",
+        "category": "VSTodo",
+        "title": "Authenticate"
       }
     ]
   },
@@ -77,8 +83,10 @@
     "@rollup/plugin-typescript": "^8.2.5",
     "@tsconfig/svelte": "^2.0.1",
     "@types/glob": "^7.1.4",
+    "@types/jsonwebtoken": "^8.5.5",
     "@types/mocha": "^9.0.0",
     "@types/node": "14.x",
+    "@types/polka": "^0.5.3",
     "@types/vscode": "^1.60.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
@@ -97,5 +105,9 @@
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "polka": "^0.5.2"
   }
 }
