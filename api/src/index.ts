@@ -177,6 +177,23 @@ import { isAuth } from "./isAuth";
     // go to 'src/compontents/Todo.svelte'
   });
 
+  app.put("/todo", isAuth, async (req: any, res) => {
+    // here in this route will will wirte a logic of completed task in todo lists
+    // and we will use a put request which is save as the post
+    const todo = await Todo.findOne(req.body.id);
+    if (!todo) {
+      // if we didnot get a todo the we will send the todo as a null
+      res.send({ todo: null });
+      return;
+    }
+    if (todo.creatorId !== req.userId) {
+      throw new Error("not authorized");
+    }
+    todo.completed = !todo.completed;
+    await todo.save();
+    res.send({ todo });
+  });
+
   app.get("/me", async (req, res) => {
     const authHeader = req.headers.authorization;
     // so the stadard fromate for the authorization headers is:

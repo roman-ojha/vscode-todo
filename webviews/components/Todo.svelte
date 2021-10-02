@@ -1,5 +1,7 @@
 <!-- now we will going to render this components into  -->
 <script lang="ts">
+import { join } from "path";
+
     import { onMount } from "svelte";
     import type{ User } from '../types';
     export let user:User;
@@ -14,6 +16,7 @@
             headers:{
                 "Content-Type":"application/json",
                 authorization:`Bearer ${accessToken}`
+               
             },
             body:JSON.stringify({
                 text:t,
@@ -46,6 +49,8 @@
             const respose=await fetch(`${apiBaseUrl}/todo`,{
             headers:{
                 authorization:`Bearer ${accessToken}`
+                 // we should also test out our authentication middleware
+                //  and we will add the complete todo functionality where we will going to add a functionality into our api
             },
         });  
         const payload =await respose.json(); 
@@ -78,11 +83,25 @@
     {#each todos as todo (todo.id)}
         <li
         class:complete={todo.completed}
-        on:click={()=>{
+        on:click={async ()=>{
             // here we reversing the completed todo list 
             // in class name we can do one of them
             // class={todo.completed?"complete" :""}
             todo.completed=!todo.completed;
+            // here now now after completing the completed functionality in backend we will route that back in here
+            const response= await fetch(`${apiBaseUrl}/todo`,{
+                method:"PUT",
+                headers:{
+                    "Content-Type":"application/json",
+                authorization:`Bearer ${accessToken}`
+
+                },
+                 body:JSON.stringify({
+                    id:todo.id,
+                })
+            })
+            console.log(await response.json());
+           
         }}>{todo.text}</li>
     {/each}
 </ul>

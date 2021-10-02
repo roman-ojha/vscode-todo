@@ -10,6 +10,10 @@ import type {User} from '../types';
     // let user:{name:string,id:number}|null=null;
     // here now we created 'User' type we can use it like this
     let user:User|null=null;
+    // now in todo we only have one page, if we want multiple pages then we cans do that
+    // and we are making a variable which defind the current page
+    // and now we can use the if statement to check and display the multiple pages
+    let page:"todos"|"contact"="todos";
     onMount(async()=>{
         // this funciton get call when the component first get mounted
         window.addEventListener('message', async event => {
@@ -69,18 +73,30 @@ import type {User} from '../types';
 {#if loading}
 <div>loading...</div>
 {:else if user}
-<Todo user={user} {accessToken}/>
-<!-- so if user exit the we will pass the user as a props in 'Todo.svelte' -->
-<!-- and now we will going to create a new file called 'types.ts'  and put some type of user:
-export type User = {
-  id: string;
-  name: string;
-  githubId: string;
-};
--> so that we can use that user every place
--> now we will going to export :
--> export let user:User; from 'Todo.svelte'
---> 
+    {#if page === "todos"}
+    <Todo user={user} {accessToken}/>
+    <!-- so if user exit the we will pass the user as a props in 'Todo.svelte' -->
+    <!-- and now we will going to create a new file called 'types.ts'  and put some type of user:
+    export type User = {
+      id: string;
+      name: string;
+      githubId: string;
+    };
+    -> so that we can use that user every place
+    -> now we will going to export :
+    -> export let user:User; from 'Todo.svelte'
+    --> 
+    <button on:click={()=>{
+        page="contact"
+    }}>Contact</button>
+    <!-- here we are making a button to go the the contact page -->
+    {:else}
+    <!-- now here we are makig the multiple pages using page vairiable -->
+    <div>Contack me here:adlfdsafdasfdsa</div>
+    <button on:click={()=>{
+        page="todos"
+    }}>go Back</button>
+    {/if}
 <button on:click={()=>{
     accessToken=""
     // for the logout we will set the accessToken to empty it means we clear the user token now user have to login again
