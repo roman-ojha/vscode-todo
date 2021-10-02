@@ -152,7 +152,7 @@ import { isAuth } from "./isAuth";
     }
   );
 
-  app.get("/todo", isAuth, async (req: any, res) => {
+  app.get("/todo", isAuth, async (req, res) => {
     const todos = await Todo.find({
       where: { creatorId: req.userId },
       order: { id: "DESC" },
@@ -162,7 +162,7 @@ import { isAuth } from "./isAuth";
     // now we can call this route and fetch all the todo form the extention side
   });
 
-  app.post("/todo", isAuth, async (req: any, res) => {
+  app.post("/todo", isAuth, async (req, res) => {
     // now in this route we will create a todo
     const todo = await Todo.create({
       text: req.body.text,
@@ -177,7 +177,7 @@ import { isAuth } from "./isAuth";
     // go to 'src/compontents/Todo.svelte'
   });
 
-  app.put("/todo", isAuth, async (req: any, res) => {
+  app.put("/todo", isAuth, async (req, res) => {
     // here in this route will will wirte a logic of completed task in todo lists
     // and we will use a put request which is save as the post
     const todo = await Todo.findOne(req.body.id);

@@ -82,6 +82,12 @@
                         -> and past in "HellowWorldPanel.ts"
 */
 
+/*
+        -> After finishing the production of extention and if you want to deploy this extention there is the good documentation for that so you can watch it:
+                        -> https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+
+*/
+
 import * as vscode from "vscode";
 import { authenticate } from "./authenitcate";
 import { HelloWorldPanel } from "./HelloWorldPanel";
@@ -263,7 +269,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.authenticate", () => {
       // we will going to put a authenitcation login inside the 'src/authenticate.ts' and call that in here
-      authenticate();
+      authenticate(() => {});
     })
   );
 }

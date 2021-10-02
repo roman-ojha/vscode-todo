@@ -13,7 +13,26 @@ import type {User} from '../types';
     // now in todo we only have one page, if we want multiple pages then we cans do that
     // and we are making a variable which defind the current page
     // and now we can use the if statement to check and display the multiple pages
-    let page:"todos"|"contact"="todos";
+    let page:"todos"|"contact"=tsvscode.getState()?.page||"todos"; // this logic will be expalin bellows
+    // but here is the thing if we had made the multiple pages and we are in some another page after refreshing the extention we will be at the default page and we are not at the page we used to be so to solve that problem we have to save the state of the page
+    // to do that in 'tsvscode' there is a two method in it 
+    /*
+        const tsvscode: {
+            setState: (state: any) => void;
+            //  this will set the new state
+            getState: () => any;
+            // this will get the current state that we just set
+        };
+    */
+//    to do that in svelte we can use a '$'
+    $:{
+        // this codeblock will call every single time what ever variable that you use inside here changed
+        tsvscode.setState({page});
+        // here now we will save the page value
+        // it means every time the page object change it will save the value of that page 
+        // now what we can do now to get the value is :
+        //  let page:"todos"|"contact"=tsvscode.getState()?.page||"todos";
+    }
     onMount(async()=>{
         // this funciton get call when the component first get mounted
         window.addEventListener('message', async event => {
